@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: ecommerce-backend
+  
+  data:
+    mongodb:
+      uri: mongodb+srv://anchal24bcs10089_db_user:TOfDRy63FhMbVZAZ@e-commercedb.foz1fkc.mongodb.net/ecommerce?appName=e-commercedb
+  
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:test@gmail.com}
+    password: ${MAIL_PASSWORD:testpassword}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=600s
+  
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.springframework: INFO
+    com.example.ecommerce: DEBUG
+
+jwt:
+  secret: ecommerce-super-secret-key-for-jwt-token-generation-minimum-256-bits-long
+  expiration: 86400000
+
+stripe:
+  api-key: ${STRIPE_API_KEY:sk_test_dummy}
+  webhook-secret: ${STRIPE_WEBHOOK_SECRET:whsec_dummy}
+
+file:
+  upload-dir: ./uploads
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
