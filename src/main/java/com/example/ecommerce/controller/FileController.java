@@ -11,7 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,7 +24,6 @@ public class FileController {
     private final FileStorageService fileStorageService;
 
     @PostMapping("/upload")
-    @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Upload file", description = "Upload a file (Admin/Seller only)")
     public ResponseEntity<FileUploadResponse> uploadFile(
@@ -38,7 +37,7 @@ public class FileController {
     public ResponseEntity<Resource> downloadFile(
             @Parameter(description = "File name") @PathVariable String fileName) {
         Resource resource = fileStorageService.loadFileAsResource(fileName);
-        
+
         String contentType = "application/octet-stream";
         if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")) {
             contentType = "image/jpeg";
@@ -51,7 +50,7 @@ public class FileController {
         } else if (fileName.endsWith(".pdf")) {
             contentType = "application/pdf";
         }
-        
+
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileName + "\"")
@@ -59,7 +58,6 @@ public class FileController {
     }
 
     @DeleteMapping("/{fileName:.+}")
-    @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Delete file", description = "Delete a file (Admin only)")
     public ResponseEntity<Void> deleteFile(

@@ -1,0 +1,46 @@
+.cart-layout {
+    display: grid;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .cart-layout {
+        grid-template-columns: 2fr 1fr;
+        align-items: start;
+    }
+
+    .sticky-summary {
+        position: sticky;
+        top: 100px;
+    }
+}
+
+.cart-item {
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart-item-details h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+}
+
+.cart-item-actions {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.item-subtotal {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--primary);
+}
+
+.text-muted {
+    color: var(--text-muted);
+}

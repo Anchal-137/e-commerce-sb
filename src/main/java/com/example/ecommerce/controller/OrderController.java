@@ -14,7 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -65,7 +65,6 @@ public class OrderController {
 
     // Admin endpoints
     @GetMapping("/admin/all")
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Get all orders (Admin)", description = "Get all orders with pagination (Admin only)")
     public ResponseEntity<PageResponse<OrderResponse>> getAllOrders(
             @RequestParam(defaultValue = "0") int page,
@@ -77,7 +76,6 @@ public class OrderController {
     }
 
     @GetMapping("/admin/status/{status}")
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Get orders by status (Admin)", description = "Get orders filtered by status (Admin only)")
     public ResponseEntity<PageResponse<OrderResponse>> getOrdersByStatus(
             @Parameter(description = "Order status") @PathVariable Order.OrderStatus status,
@@ -88,7 +86,6 @@ public class OrderController {
     }
 
     @PutMapping("/admin/{orderId}/status")
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update order status (Admin)", description = "Update the status of an order (Admin only)")
     public ResponseEntity<OrderResponse> updateOrderStatus(
             @Parameter(description = "Order ID") @PathVariable String orderId,

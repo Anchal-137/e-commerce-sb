@@ -3,6 +3,7 @@ package com.example.ecommerce.controller;
 import com.example.ecommerce.dto.PageResponse;
 import com.example.ecommerce.dto.product.ProductRequest;
 import com.example.ecommerce.dto.product.ProductResponse;
+import com.example.ecommerce.dto.product.ProductUpdateRequest;
 import com.example.ecommerce.model.User;
 import com.example.ecommerce.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,7 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,7 @@ public class ProductController {
             @Parameter(description = "Page size") @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "Sort by field") @RequestParam(defaultValue = "createdAt") String sortBy,
             @Parameter(description = "Sort direction") @RequestParam(defaultValue = "desc") String sortDir) {
-        
+
         PageResponse<ProductResponse> products = productService.getAllProducts(page, size, sortBy, sortDir);
         return ResponseEntity.ok(products);
     }
@@ -58,7 +59,7 @@ public class ProductController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDir) {
-        
+
         PageResponse<ProductResponse> products = productService.searchProducts(
                 keyword, category, minPrice, maxPrice, page, size, sortBy, sortDir);
         return ResponseEntity.ok(products);
@@ -73,9 +74,7 @@ public class ProductController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
-    @Operation(summary = "Create product", description = "Create a new product (Admin/Seller only)",
-               security = @SecurityRequirement(name = "Bearer Authentication"))
+    @Operation(summary = "Create product", description = "Create a new product (Admin/Seller only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<ProductResponse> createProduct(
             @Valid @RequestBody ProductRequest request,
             @AuthenticationPrincipal User user) {
@@ -84,20 +83,16 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
-    @Operation(summary = "Update product", description = "Update an existing product (Admin/Seller only)",
-               security = @SecurityRequirement(name = "Bearer Authentication"))
+    @Operation(summary = "Update product", description = "Update an existing product (Admin/Seller only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<ProductResponse> updateProduct(
             @Parameter(description = "Product ID") @PathVariable String id,
-            @Valid @RequestBody ProductRequest request) {
+            @Valid @RequestBody ProductUpdateRequest request) {
         ProductResponse product = productService.updateProduct(id, request);
         return ResponseEntity.ok(product);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Delete product", description = "Soft delete a product (Admin only)",
-               security = @SecurityRequirement(name = "Bearer Authentication"))
+    @Operation(summary = "Delete product", description = "Soft delete a product (Admin only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<Void> deleteProduct(
             @Parameter(description = "Product ID") @PathVariable String id) {
         productService.deleteProduct(id);

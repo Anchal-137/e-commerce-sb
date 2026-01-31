@@ -42,3 +42,9 @@ logs/
 
 ### Other
 bin/
+
+### Node ###
+**/node_modules/
+**/dist/
+**/coverage/
+.DS_Store
