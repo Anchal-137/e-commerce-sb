@@ -57,7 +57,7 @@ This document contains sample JSON request bodies for all the API endpoints in t
 **POST** `/api/cart/items`
 ```json
 {
-  "productId": "PRODUCT_ID_HERE",
+  "productId": "697e4466a7f5e34c64e7e5ab",
   "quantity": 1
 }
 ```
@@ -66,7 +66,7 @@ This document contains sample JSON request bodies for all the API endpoints in t
 **PUT** `/api/cart/items`
 ```json
 {
-  "productId": "PRODUCT_ID_HERE",
+  "productId": "697e4466a7f5e34c64e7e5ab",
   "quantity": 3
 }
 ```

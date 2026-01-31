@@ -11,12 +11,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/payments")
+@RequestMapping("/api/payment")
 @RequiredArgsConstructor
 @Tag(name = "Payments", description = "Payment processing APIs")
 public class PaymentController {
@@ -31,6 +31,15 @@ public class PaymentController {
             @AuthenticationPrincipal User user) {
         PaymentResponse payment = paymentService.createPaymentIntent(user.getId(), request);
         return ResponseEntity.ok(payment);
+    }
+
+    @PostMapping("/process")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "Process Payment", description = "Process a payment (Alias for create-intent)")
+    public ResponseEntity<PaymentResponse> processPayment(
+            @Valid @RequestBody PaymentRequest request,
+            @AuthenticationPrincipal User user) {
+        return createPaymentIntent(request, user);
     }
 
     @PostMapping("/confirm/{paymentIntentId}")
@@ -52,7 +61,6 @@ public class PaymentController {
     }
 
     @PostMapping("/refund/{paymentId}")
-    @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Refund payment (Admin)", description = "Refund a completed payment (Admin only)")
     public ResponseEntity<PaymentResponse> refundPayment(

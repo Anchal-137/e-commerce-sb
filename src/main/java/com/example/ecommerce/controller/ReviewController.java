@@ -14,7 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +27,6 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping
-    @PreAuthorize("isAuthenticated()")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Create a review", description = "Create a new product review. Users can only review products once.")
     public ResponseEntity<ReviewResponse> createReview(
@@ -38,7 +37,6 @@ public class ReviewController {
     }
 
     @PutMapping("/{reviewId}")
-    @PreAuthorize("isAuthenticated()")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Update a review", description = "Update your own review")
     public ResponseEntity<ReviewResponse> updateReview(
@@ -50,7 +48,6 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{reviewId}")
-    @PreAuthorize("isAuthenticated()")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Delete a review", description = "Delete your own review (or any review if admin)")
     public ResponseEntity<Void> deleteReview(
@@ -80,7 +77,6 @@ public class ReviewController {
     }
 
     @GetMapping("/my-reviews")
-    @PreAuthorize("isAuthenticated()")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Get my reviews", description = "Get all reviews written by the current user")
     public ResponseEntity<PageResponse<ReviewResponse>> getMyReviews(
