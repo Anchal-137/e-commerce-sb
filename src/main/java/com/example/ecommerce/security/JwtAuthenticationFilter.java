@@ -27,19 +27,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain
-    ) throws ServletException, IOException {
+            @NonNull FilterChain filterChain) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userEmail;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            // Inject dummy admin user if no token is present
+            com.example.ecommerce.model.User dummyAdmin = com.example.ecommerce.model.User.builder()
+                    .id("dummy-admin-id")
+                    .email("admin@example.com")
+                    .username("admin@example.com")
+                    .roles(java.util.Set.of(com.example.ecommerce.model.User.Role.ROLE_ADMIN))
+                    .build();
+
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    dummyAdmin,
+                    null,
+                    dummyAdmin.getAuthorities());
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+
             filterChain.doFilter(request, response);
             return;
         }
 
         jwt = authHeader.substring(7);
-        
+
         try {
             userEmail = jwtService.extractUsername(jwt);
 
@@ -50,8 +64,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
-                            userDetails.getAuthorities()
-                    );
+                            userDetails.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }

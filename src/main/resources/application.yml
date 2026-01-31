@@ -37,7 +37,7 @@ logging:
     com.example.ecommerce: DEBUG
 
 jwt:
-  secret: ecommerce-super-secret-key-for-jwt-token-generation-minimum-256-bits-long
+  secret: ZWNvbW1lcmNlLXN1cGVyLXNlY3JldC1rZXktZm9yLWp3dC10b2tlbi1nZW5lcmF0aW9uLW1pbmltdW0tMjU2LWJpdHMtbG9uZw==
   expiration: 86400000
 
 stripe:

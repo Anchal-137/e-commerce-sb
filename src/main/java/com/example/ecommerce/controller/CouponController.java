@@ -31,7 +31,7 @@ public class CouponController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    @SecurityRequirement(name = "bearerAuth")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Create coupon (Admin)", description = "Create a new discount coupon")
     public ResponseEntity<CouponResponse> createCoupon(@Valid @RequestBody CouponRequest request) {
         CouponResponse response = couponService.createCoupon(request);
@@ -40,7 +40,7 @@ public class CouponController {
 
     @GetMapping("/admin/all")
     @PreAuthorize("hasRole('ADMIN')")
-    @SecurityRequirement(name = "bearerAuth")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Get all coupons (Admin)", description = "Get all coupons including inactive ones")
     public ResponseEntity<PageResponse<CouponResponse>> getAllCoupons(
             @Parameter(description = "Page number (0-based)") @RequestParam(defaultValue = "0") int page,
@@ -51,7 +51,7 @@ public class CouponController {
 
     @PutMapping("/{couponId}")
     @PreAuthorize("hasRole('ADMIN')")
-    @SecurityRequirement(name = "bearerAuth")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Update coupon (Admin)", description = "Update an existing coupon")
     public ResponseEntity<CouponResponse> updateCoupon(
             @PathVariable String couponId,
@@ -62,7 +62,7 @@ public class CouponController {
 
     @PatchMapping("/{couponId}/deactivate")
     @PreAuthorize("hasRole('ADMIN')")
-    @SecurityRequirement(name = "bearerAuth")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Deactivate coupon (Admin)", description = "Deactivate a coupon without deleting it")
     public ResponseEntity<CouponResponse> deactivateCoupon(@PathVariable String couponId) {
         CouponResponse response = couponService.deactivateCoupon(couponId);
@@ -71,7 +71,7 @@ public class CouponController {
 
     @DeleteMapping("/{couponId}")
     @PreAuthorize("hasRole('ADMIN')")
-    @SecurityRequirement(name = "bearerAuth")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Delete coupon (Admin)", description = "Permanently delete a coupon")
     public ResponseEntity<Void> deleteCoupon(@PathVariable String couponId) {
         couponService.deleteCoupon(couponId);
@@ -98,7 +98,7 @@ public class CouponController {
 
     @PostMapping("/validate")
     @PreAuthorize("isAuthenticated()")
-    @SecurityRequirement(name = "bearerAuth")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Validate coupon", description = "Validate a coupon and calculate the discount amount")
     public ResponseEntity<CouponValidationResponse> validateCoupon(
             @Valid @RequestBody ApplyCouponRequest request,
