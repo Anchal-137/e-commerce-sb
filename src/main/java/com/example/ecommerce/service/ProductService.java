@@ -3,6 +3,7 @@ package com.example.ecommerce.service;
 import com.example.ecommerce.dto.PageResponse;
 import com.example.ecommerce.dto.product.ProductRequest;
 import com.example.ecommerce.dto.product.ProductResponse;
+import com.example.ecommerce.dto.product.ProductUpdateRequest;
 import com.example.ecommerce.exception.ResourceNotFoundException;
 import com.example.ecommerce.model.Product;
 import com.example.ecommerce.model.User;
@@ -40,29 +41,30 @@ public class ProductService {
 
     @Cacheable(value = "productList", key = "#page + '_' + #size + '_' + #sortBy + '_' + #sortDir")
     public PageResponse<ProductResponse> getAllProducts(int page, int size, String sortBy, String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase("desc") 
-                ? Sort.by(sortBy).descending() 
+        Sort sort = sortDir.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
                 : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        
+
         Page<Product> productPage = productRepository.findByActiveTrue(pageable);
         return buildPageResponse(productPage);
     }
 
-    public PageResponse<ProductResponse> searchProducts(String keyword, String category, 
-                                                         Double minPrice, Double maxPrice, 
-                                                         int page, int size, String sortBy, String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase("desc") 
-                ? Sort.by(sortBy).descending() 
+    public PageResponse<ProductResponse> searchProducts(String keyword, String category,
+            Double minPrice, Double maxPrice,
+            int page, int size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
                 : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        
+
         Page<Product> productPage;
-        
+
         if (keyword != null && !keyword.isEmpty()) {
             productPage = productRepository.searchProducts(keyword, pageable);
         } else if (category != null && !category.isEmpty() && minPrice != null && maxPrice != null) {
-            productPage = productRepository.findByActiveTrueAndCategoryAndPriceBetween(category, minPrice, maxPrice, pageable);
+            productPage = productRepository.findByActiveTrueAndCategoryAndPriceBetween(category, minPrice, maxPrice,
+                    pageable);
         } else if (category != null && !category.isEmpty()) {
             productPage = productRepository.findByActiveTrueAndCategory(category, pageable);
         } else if (minPrice != null && maxPrice != null) {
@@ -70,7 +72,7 @@ public class ProductService {
         } else {
             productPage = productRepository.findByActiveTrue(pageable);
         }
-        
+
         return buildPageResponse(productPage);
     }
 
@@ -80,7 +82,7 @@ public class ProductService {
         return buildPageResponse(productPage);
     }
 
-    @CacheEvict(value = {"products", "productList"}, allEntries = true)
+    @CacheEvict(value = { "products", "productList" }, allEntries = true)
     public ProductResponse createProduct(ProductRequest request, User seller) {
         Product product = Product.builder()
                 .name(request.getName())
@@ -97,31 +99,36 @@ public class ProductService {
                 .createdAt(Instant.now())
                 .updatedAt(Instant.now())
                 .build();
-        
+
         Product savedProduct = productRepository.save(product);
         return mapToResponse(savedProduct);
     }
 
-    @CacheEvict(value = {"products", "productList"}, allEntries = true)
-    public ProductResponse updateProduct(String id, ProductRequest request) {
+    @CacheEvict(value = { "products", "productList" }, allEntries = true)
+    public ProductResponse updateProduct(String id, ProductUpdateRequest request) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
-        
-        product.setName(request.getName());
-        product.setDescription(request.getDescription());
-        product.setPrice(request.getPrice());
-        product.setStock(request.getStock());
-        product.setCategory(request.getCategory());
+
+        if (request.getName() != null)
+            product.setName(request.getName());
+        if (request.getDescription() != null)
+            product.setDescription(request.getDescription());
+        if (request.getPrice() != null)
+            product.setPrice(request.getPrice());
+        if (request.getStock() != null)
+            product.setStock(request.getStock());
+        if (request.getCategory() != null)
+            product.setCategory(request.getCategory());
         if (request.getImageUrls() != null) {
             product.setImageUrls(request.getImageUrls());
         }
         product.setUpdatedAt(Instant.now());
-        
+
         Product updatedProduct = productRepository.save(product);
         return mapToResponse(updatedProduct);
     }
 
-    @CacheEvict(value = {"products", "productList"}, allEntries = true)
+    @CacheEvict(value = { "products", "productList" }, allEntries = true)
     public void deleteProduct(String id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
@@ -130,7 +137,7 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    @CacheEvict(value = {"products", "productList"}, allEntries = true)
+    @CacheEvict(value = { "products", "productList" }, allEntries = true)
     public void updateStock(String productId, int quantityChange) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
@@ -151,7 +158,7 @@ public class ProductService {
         List<ProductResponse> content = productPage.getContent().stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
-        
+
         return PageResponse.<ProductResponse>builder()
                 .content(content)
                 .pageNumber(productPage.getNumber())

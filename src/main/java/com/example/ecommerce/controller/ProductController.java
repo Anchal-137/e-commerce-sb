@@ -3,6 +3,7 @@ package com.example.ecommerce.controller;
 import com.example.ecommerce.dto.PageResponse;
 import com.example.ecommerce.dto.product.ProductRequest;
 import com.example.ecommerce.dto.product.ProductResponse;
+import com.example.ecommerce.dto.product.ProductUpdateRequest;
 import com.example.ecommerce.model.User;
 import com.example.ecommerce.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -85,7 +86,7 @@ public class ProductController {
     @Operation(summary = "Update product", description = "Update an existing product (Admin/Seller only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<ProductResponse> updateProduct(
             @Parameter(description = "Product ID") @PathVariable String id,
-            @Valid @RequestBody ProductRequest request) {
+            @Valid @RequestBody ProductUpdateRequest request) {
         ProductResponse product = productService.updateProduct(id, request);
         return ResponseEntity.ok(product);
     }
