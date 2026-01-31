@@ -41,9 +41,9 @@ dependencies {
     // Stripe Payment
     implementation 'com.stripe:stripe-java:24.0.0'
     
-    // Lombok
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    // Lombok (updated for Java 23 compatibility)
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
     
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
